@@ -6,133 +6,169 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Clock, Users, MapPin, Send } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Clock, MapPin, Users, FileText, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useBookingContext } from "@/contexts/BookingContext";
 
 const BookingForm = ({ user }) => {
-  const [booking, setBooking] = useState({
+  const [selectedDate, setSelectedDate] = useState();
+  const [formData, setFormData] = useState({
     room: "",
-    date: "",
     startTime: "",
     endTime: "",
-    participants: "",
     purpose: "",
-    equipment: []
+    participants: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { addBooking } = useBookingContext();
 
   const rooms = [
-    { id: "tr1", name: "Training Room A", capacity: 20, equipment: ["Projector", "Whiteboard", "AC"] },
-    { id: "tr2", name: "Training Room B", capacity: 15, equipment: ["Projector", "Flipchart", "AC"] },
-    { id: "tr3", name: "Conference Hall", capacity: 50, equipment: ["AV System", "Microphone", "AC"] },
-    { id: "tr4", name: "Workshop Room", capacity: 25, equipment: ["Tools", "Workstations", "AC"] }
+    "Training Room A",
+    "Training Room B", 
+    "Conference Hall",
+    "Workshop Room",
+    "Seminar Hall",
+    "Meeting Room 1",
+    "Meeting Room 2"
   ];
 
   const timeSlots = [
-    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", 
-    "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", 
-    "16:00", "16:30", "17:00", "17:30", "18:00"
+    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
+    "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
   ];
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Validate form
-    if (!booking.room || !booking.date || !booking.startTime || !booking.endTime) {
+    
+    if (!selectedDate || !formData.room || !formData.startTime || !formData.endTime) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
         variant: "destructive"
       });
-      setIsSubmitting(false);
       return;
     }
 
-    // Simulate API call
+    setIsSubmitting(true);
+
+    // Simulate API call delay
     setTimeout(() => {
-      const bookingId = `BK${Date.now()}`;
-      
+      const bookingData = {
+        room: formData.room,
+        date: format(selectedDate, "yyyy-MM-dd"),
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+        user: user.name,
+        email: user.email,
+        purpose: formData.purpose,
+        participants: parseInt(formData.participants) || 1
+      };
+
+      addBooking(bookingData);
+
       toast({
         title: "Booking Submitted Successfully!",
-        description: `Your booking request (${bookingId}) has been sent for admin approval.`,
+        description: "Your booking request has been sent to admin for approval.",
       });
 
       // Reset form
-      setBooking({
+      setFormData({
         room: "",
-        date: "",
         startTime: "",
         endTime: "",
-        participants: "",
         purpose: "",
-        equipment: []
+        participants: ""
       });
-
+      setSelectedDate(undefined);
       setIsSubmitting(false);
     }, 1000);
   };
 
-  const selectedRoom = rooms.find(room => room.id === booking.room);
-
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 flex items-center space-x-2">
-          <Calendar className="h-6 w-6 text-blue-600" />
-          <span>Book Training Room</span>
-        </h2>
-        <p className="text-gray-600 mt-1">Schedule your training session or meeting</p>
+        <h2 className="text-2xl font-bold text-gray-900">Book a Training Room</h2>
+        <p className="text-gray-600 mt-1">Reserve a room for your training session or meeting</p>
       </div>
 
       <Card className="shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <MapPin className="h-5 w-5 text-green-600" />
-            <span>Room Details</span>
+            <CalendarIcon className="h-5 w-5 text-blue-600" />
+            <span>Booking Details</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Room Selection */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="room">Training Room *</Label>
-                <Select value={booking.room} onValueChange={(value) => setBooking(prev => ({ ...prev, room: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a room" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {rooms.map(room => (
-                      <SelectItem key={room.id} value={room.id}>
-                        {room.name} (Capacity: {room.capacity})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="room" className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4" />
+                <span>Training Room *</span>
+              </Label>
+              <Select value={formData.room} onValueChange={(value) => handleInputChange("room", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a room" />
+                </SelectTrigger>
+                <SelectContent>
+                  {rooms.map(room => (
+                    <SelectItem key={room} value={room}>{room}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="date">Date *</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={booking.date}
-                  onChange={(e) => setBooking(prev => ({ ...prev, date: e.target.value }))}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                />
-              </div>
+            {/* Date Selection */}
+            <div className="space-y-2">
+              <Label className="flex items-center space-x-2">
+                <CalendarIcon className="h-4 w-4" />
+                <span>Date *</span>
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !selectedDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={setSelectedDate}
+                    disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* Time Selection */}
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="startTime">Start Time *</Label>
-                <Select value={booking.startTime} onValueChange={(value) => setBooking(prev => ({ ...prev, startTime: value }))}>
+                <Label className="flex items-center space-x-2">
+                  <Clock className="h-4 w-4" />
+                  <span>Start Time *</span>
+                </Label>
+                <Select value={formData.startTime} onValueChange={(value) => handleInputChange("startTime", value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select start time" />
+                    <SelectValue placeholder="Start time" />
                   </SelectTrigger>
                   <SelectContent>
                     {timeSlots.map(time => (
@@ -143,10 +179,13 @@ const BookingForm = ({ user }) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endTime">End Time *</Label>
-                <Select value={booking.endTime} onValueChange={(value) => setBooking(prev => ({ ...prev, endTime: value }))}>
+                <Label className="flex items-center space-x-2">
+                  <Clock className="h-4 w-4" />
+                  <span>End Time *</span>
+                </Label>
+                <Select value={formData.endTime} onValueChange={(value) => handleInputChange("endTime", value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select end time" />
+                    <SelectValue placeholder="End time" />
                   </SelectTrigger>
                   <SelectContent>
                     {timeSlots.map(time => (
@@ -157,74 +196,59 @@ const BookingForm = ({ user }) => {
               </div>
             </div>
 
-            {/* Additional Details */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="participants">Number of Participants</Label>
-                <div className="relative">
-                  <Users className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <Input
-                    id="participants"
-                    type="number"
-                    placeholder="e.g., 15"
-                    value={booking.participants}
-                    onChange={(e) => setBooking(prev => ({ ...prev, participants: e.target.value }))}
-                    className="pl-10"
-                    min="1"
-                    max={selectedRoom?.capacity || 50}
-                  />
-                </div>
-              </div>
-
-              {selectedRoom && (
-                <div className="space-y-2">
-                  <Label>Available Equipment</Label>
-                  <div className="p-3 bg-gray-50 rounded-md">
-                    <div className="flex flex-wrap gap-2">
-                      {selectedRoom.equipment.map(item => (
-                        <span key={item} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
+            {/* Participants */}
+            <div className="space-y-2">
+              <Label htmlFor="participants" className="flex items-center space-x-2">
+                <Users className="h-4 w-4" />
+                <span>Number of Participants</span>
+              </Label>
+              <Input
+                id="participants"
+                type="number"
+                placeholder="Enter number of participants"
+                value={formData.participants}
+                onChange={(e) => handleInputChange("participants", e.target.value)}
+                min="1"
+                max="100"
+              />
             </div>
 
             {/* Purpose */}
             <div className="space-y-2">
-              <Label htmlFor="purpose">Purpose of Meeting</Label>
+              <Label htmlFor="purpose" className="flex items-center space-x-2">
+                <FileText className="h-4 w-4" />
+                <span>Purpose of Booking</span>
+              </Label>
               <Textarea
                 id="purpose"
-                placeholder="Brief description of your training session or meeting..."
-                value={booking.purpose}
-                onChange={(e) => setBooking(prev => ({ ...prev, purpose: e.target.value }))}
+                placeholder="Describe the purpose of your booking (e.g., Team training, Client meeting, Workshop)"
+                value={formData.purpose}
+                onChange={(e) => handleInputChange("purpose", e.target.value)}
                 rows={3}
               />
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setBooking({
-                  room: "",
-                  date: "",
-                  startTime: "",
-                  endTime: "",
-                  participants: "",
-                  purpose: "",
-                  equipment: []
-                })}
-              >
-                Clear Form
-              </Button>
-              <Button type="submit" disabled={isSubmitting} className="flex items-center space-x-2">
-                <Send className="h-4 w-4" />
-                <span>{isSubmitting ? "Submitting..." : "Submit Booking"}</span>
-              </Button>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4 mr-2" />
+                  Submit Booking Request
+                </>
+              )}
+            </Button>
+
+            <div className="text-center text-sm text-gray-500">
+              Your booking request will be sent to admin for approval
             </div>
           </form>
         </CardContent>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, CheckCircle, XCircle, Clock, Users, MapPin, Calendar, BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useBookingContext } from "@/contexts/BookingContext";
 
 const AdminDashboard = ({ user }) => {
-  const [bookings, setBookings] = useState([]);
+  const { bookings, updateBookingStatus } = useBookingContext();
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -18,99 +18,25 @@ const AdminDashboard = ({ user }) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Sample booking requests
-    const sampleBookings = [
-      {
-        id: "BK001",
-        room: "Training Room A",
-        date: "2024-12-28",
-        startTime: "09:00",
-        endTime: "11:00",
-        user: "John Doe",
-        email: "john.doe@vinsys.com",
-        purpose: "Team Training Session on React Development",
-        status: "pending",
-        participants: 15,
-        createdAt: "2024-12-27T10:30:00Z"
-      },
-      {
-        id: "BK002",
-        room: "Conference Hall",
-        date: "2024-12-29",
-        startTime: "14:00",
-        endTime: "16:00",
-        user: "Jane Smith",
-        email: "jane.smith@vinsys.com",
-        purpose: "Client Presentation for Q4 Results",
-        status: "pending",
-        participants: 25,
-        createdAt: "2024-12-27T11:15:00Z"
-      },
-      {
-        id: "BK003",
-        room: "Training Room B",
-        date: "2024-12-30",
-        startTime: "10:00",
-        endTime: "12:00",
-        user: "Mike Johnson",
-        email: "mike.johnson@vinsys.com",
-        purpose: "Workshop on Cloud Technologies",
-        status: "approved",
-        participants: 12,
-        createdAt: "2024-12-26T14:20:00Z"
-      },
-      {
-        id: "BK004",
-        room: "Workshop Room",
-        date: "2024-12-31",
-        startTime: "15:00",
-        endTime: "17:00",
-        user: "Sarah Wilson",
-        email: "sarah.wilson@vinsys.com",
-        purpose: "Year-end Team Building Activity",
-        status: "rejected",
-        participants: 30,
-        createdAt: "2024-12-25T09:45:00Z"
-      }
-    ];
-
-    setBookings(sampleBookings);
-
-    // Calculate stats
+    // Calculate stats from context bookings
     const newStats = {
-      total: sampleBookings.length,
-      pending: sampleBookings.filter(b => b.status === "pending").length,
-      approved: sampleBookings.filter(b => b.status === "approved").length,
-      rejected: sampleBookings.filter(b => b.status === "rejected").length
+      total: bookings.length,
+      pending: bookings.filter(b => b.status === "pending").length,
+      approved: bookings.filter(b => b.status === "approved").length,
+      rejected: bookings.filter(b => b.status === "rejected").length
     };
     setStats(newStats);
-  }, []);
+    console.log('Admin dashboard stats updated:', newStats);
+  }, [bookings]);
 
   const handleBookingAction = (bookingId, action) => {
-    setBookings(prev => 
-      prev.map(booking => 
-        booking.id === bookingId 
-          ? { ...booking, status: action }
-          : booking
-      )
-    );
+    updateBookingStatus(bookingId, action);
 
     const booking = bookings.find(b => b.id === bookingId);
     toast({
       title: `Booking ${action.charAt(0).toUpperCase() + action.slice(1)}`,
       description: `${booking?.user}'s booking for ${booking?.room} has been ${action}.`,
     });
-
-    // Update stats
-    setStats(prev => ({
-      ...prev,
-      pending: bookings.filter(b => b.status === "pending" && b.id !== bookingId).length + 
-               (action === "pending" ? 1 : 0),
-      approved: bookings.filter(b => b.status === "approved").length + 
-                (action === "approved" ? 1 : 0),
-      rejected: bookings.filter(b => b.status === "rejected").length + 
-                (action === "rejected" ? 1 : 0)
-    }));
   };
 
   const getStatusColor = (status) => {

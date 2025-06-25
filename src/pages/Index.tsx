@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import LoginForm from "@/components/LoginForm";
 import BookingForm from "@/components/BookingForm";
 import BookingCalendar from "@/components/BookingCalendar";
 import AdminDashboard from "@/components/AdminDashboard";
+import { BookingProvider } from "@/contexts/BookingContext";
 
 const Index = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -74,64 +74,66 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navigation Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Calendar className="h-6 w-6 text-white" />
+    <BookingProvider>
+      <div className="min-h-screen bg-gray-50">
+        {/* Navigation Header */}
+        <header className="bg-white shadow-sm border-b">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="bg-blue-600 p-2 rounded-lg">
+                  <Calendar className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">VINSYS Booking</h1>
+                  <p className="text-sm text-gray-500">Welcome, {currentUser?.name}</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">VINSYS Booking</h1>
-                <p className="text-sm text-gray-500">Welcome, {currentUser?.name}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {currentUser?.role !== "admin" && (
-                <>
+              <div className="flex items-center space-x-4">
+                {currentUser?.role !== "admin" && (
+                  <>
+                    <Button
+                      variant={activeView === "booking" ? "default" : "ghost"}
+                      onClick={() => setActiveView("booking")}
+                      className="flex items-center space-x-2"
+                    >
+                      <span>Book Room</span>
+                    </Button>
+                    <Button
+                      variant={activeView === "calendar" ? "default" : "ghost"}
+                      onClick={() => setActiveView("calendar")}
+                      className="flex items-center space-x-2"
+                    >
+                      <span>View Calendar</span>
+                    </Button>
+                  </>
+                )}
+                {currentUser?.role === "admin" && (
                   <Button
-                    variant={activeView === "booking" ? "default" : "ghost"}
-                    onClick={() => setActiveView("booking")}
+                    variant={activeView === "admin" ? "default" : "ghost"}
+                    onClick={() => setActiveView("admin")}
                     className="flex items-center space-x-2"
                   >
-                    <span>Book Room</span>
+                    <Shield className="h-4 w-4" />
+                    <span>Admin Dashboard</span>
                   </Button>
-                  <Button
-                    variant={activeView === "calendar" ? "default" : "ghost"}
-                    onClick={() => setActiveView("calendar")}
-                    className="flex items-center space-x-2"
-                  >
-                    <span>View Calendar</span>
-                  </Button>
-                </>
-              )}
-              {currentUser?.role === "admin" && (
-                <Button
-                  variant={activeView === "admin" ? "default" : "ghost"}
-                  onClick={() => setActiveView("admin")}
-                  className="flex items-center space-x-2"
-                >
-                  <Shield className="h-4 w-4" />
-                  <span>Admin Dashboard</span>
+                )}
+                <Button variant="outline" onClick={handleLogout}>
+                  Logout
                 </Button>
-              )}
-              <Button variant="outline" onClick={handleLogout}>
-                Logout
-              </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {activeView === "booking" && <BookingForm user={currentUser} />}
-        {activeView === "calendar" && <BookingCalendar user={currentUser} />}
-        {activeView === "admin" && <AdminDashboard user={currentUser} />}
-      </main>
-    </div>
+        {/* Main Content */}
+        <main className="container mx-auto px-4 py-8">
+          {activeView === "booking" && <BookingForm user={currentUser} />}
+          {activeView === "calendar" && <BookingCalendar user={currentUser} />}
+          {activeView === "admin" && <AdminDashboard user={currentUser} />}
+        </main>
+      </div>
+    </BookingProvider>
   );
 };
 
