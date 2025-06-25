@@ -65,24 +65,30 @@ export const BookingProvider = ({ children }: { children: ReactNode }) => {
   const addBooking = (bookingData: Omit<Booking, 'id' | 'status' | 'createdAt'>) => {
     const newBooking: Booking = {
       ...bookingData,
-      id: `BK${String(bookings.length + 1).padStart(3, '0')}`,
+      id: `BK${String(Date.now()).slice(-3)}`, // Use timestamp for unique ID
       status: 'pending',
       createdAt: new Date().toISOString()
     };
     
-    setBookings(prev => [newBooking, ...prev]);
-    console.log('New booking added:', newBooking);
+    console.log('Adding new booking:', newBooking);
+    setBookings(prev => {
+      const updated = [newBooking, ...prev];
+      console.log('Updated bookings list:', updated);
+      return updated;
+    });
   };
 
   const updateBookingStatus = (bookingId: string, status: 'approved' | 'rejected') => {
-    setBookings(prev => 
-      prev.map(booking => 
+    console.log(`Updating booking ${bookingId} to status: ${status}`);
+    setBookings(prev => {
+      const updated = prev.map(booking => 
         booking.id === bookingId 
           ? { ...booking, status }
           : booking
-      )
-    );
-    console.log(`Booking ${bookingId} status updated to: ${status}`);
+      );
+      console.log('Updated bookings after status change:', updated);
+      return updated;
+    });
   };
 
   return (

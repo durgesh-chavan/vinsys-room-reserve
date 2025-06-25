@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const AdminDashboard = ({ user }) => {
     };
     setStats(newStats);
     console.log('Admin dashboard stats updated:', newStats);
+    console.log('Current bookings in admin:', bookings);
   }, [bookings]);
 
   const handleBookingAction = (bookingId, action) => {
@@ -50,6 +52,8 @@ const AdminDashboard = ({ user }) => {
 
   const pendingBookings = bookings.filter(b => b.status === "pending");
   const processedBookings = bookings.filter(b => b.status !== "pending");
+
+  console.log('Rendering admin dashboard with:', { pendingCount: pendingBookings.length, totalCount: bookings.length });
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -110,6 +114,11 @@ const AdminDashboard = ({ user }) => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Debug info - remove in production */}
+      <div className="mb-4 p-4 bg-gray-100 rounded text-sm text-gray-600">
+        Debug: Total bookings in context: {bookings.length}, Pending: {pendingBookings.length}
       </div>
 
       {/* Booking Management */}
