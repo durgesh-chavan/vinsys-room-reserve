@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
@@ -15,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useBookingContext } from "@/contexts/BookingContext";
 
 const BookingForm = ({ user }) => {
-  const [selectedDate, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [formData, setFormData] = useState({
     room: "",
     startTime: "",
