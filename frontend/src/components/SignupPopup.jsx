@@ -34,7 +34,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
     }
 
     try {
-      const res = await fetch('/api/mail/send-otp', {
+      const res = await fetch('http://13.203.76.7:5000/api/mail/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -64,7 +64,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
 
     try {
       // 1. Verify OTP
-      const verifyRes = await fetch('/api/mail/verify-otp', {
+      const verifyRes = await fetch('http://13.203.76.7:5000/api/mail/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, otp: formData.otp })
@@ -74,7 +74,7 @@ const SignupPopup = ({ isOpen, onClose, onSwitchToLogin }) => {
       if (!verifyRes.ok) throw new Error(verifyData.message || 'OTP verification failed');
 
       // 2. Create user
-      const createRes = await fetch('/api/users', {
+      const createRes = await fetch('http://13.203.76.7:5000/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000', // Updated for EC2 full deployment
+  baseURL: 'http://13.203.76.7:5000', // Updated for EC2 full deployment
 });
 
 axiosInstance.interceptors.request.use(

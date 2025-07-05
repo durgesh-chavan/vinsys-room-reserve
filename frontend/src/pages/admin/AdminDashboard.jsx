@@ -42,7 +42,7 @@ const AdminDashboard = () => {
       setApprovalsError(null);
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/bookings/pending', {
+        const res = await axios.get('http://13.203.76.7:5000/api/bookings/pending', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
@@ -70,7 +70,7 @@ const AdminDashboard = () => {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No auth token found');
 
-        const res = await axios.get('http://localhost:5000/api/stats/admin', {
+        const res = await axios.get('http://13.203.76.7:5000/api/stats/admin', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
       }));
 
       // Refresh stats
-      const statsRes = await axios.get('/stats/admin', {
+      const statsRes = await axios.get('http://13.203.76.7:5000/stats/admin', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(prev => ({
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
       }));
 
       // Refresh stats
-      const statsRes = await axios.get('/stats/admin', {
+      const statsRes = await axios.get('http://13.203.76.7:5000/stats/admin', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStats(prev => ({

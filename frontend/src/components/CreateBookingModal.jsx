@@ -30,7 +30,7 @@ export default function CreateBookingModal({ onClose }) {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/users?role=user');
+      const res = await axios.get('http://13.203.76.7:5000/users?role=user');
       setUserList(res.data.data || []);
     } catch (error) {
       console.error('Failed to fetch users:', error);

@@ -15,7 +15,7 @@ export const useBookingStore = create((set, get) => ({
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/api/bookings/', newBooking);
+      const res = await axios.post('http://13.203.76.7:5000/api/bookings/', newBooking);
 
       if (res.data?.success) {
         await get().getBookings();
@@ -39,7 +39,7 @@ export const useBookingStore = create((set, get) => ({
     if (!user) return;
 
     try {
-      const res = await axios.get('http://localhost:5000/api/bookings/');
+      const res = await axios.get('http://13.203.76.7:5000/api/bookings/');
 
       if (res.data?.success) {
         set({ bookings: res.data.data });
@@ -56,7 +56,7 @@ export const useBookingStore = create((set, get) => ({
     if (!user) return { success: false, message: 'User not authenticated' };
 
     try {
-      const res = await axios.delete(`/bookings/${bid}`);
+      const res = await axios.delete(`http://13.203.76.7:5000/bookings/${bid}`);
 
       if (res.data?.success) {
         set((state) => ({
@@ -79,7 +79,7 @@ export const useBookingStore = create((set, get) => ({
     if (!user) return { success: false, message: 'User not authenticated' };
 
     try {
-      const res = await axios.put(`/bookings/${bid}`, updateBooking);
+      const res = await axios.put(`http://13.203.76.7:5000/bookings/${bid}`, updateBooking);
 
       if (res.data?.success) {
         set((state) => ({

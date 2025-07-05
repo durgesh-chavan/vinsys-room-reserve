@@ -15,7 +15,7 @@ export const useRoomStore = create((set, get) => ({
     const token = get().getToken();
     set({ loading: true, error: null });
     try {
-      const res = await fetch('/api/rooms', {
+      const res = await fetch('http://13.203.76.7:5000/api/rooms', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -33,7 +33,7 @@ export const useRoomStore = create((set, get) => ({
     const token = get().getToken();
     set({ loading: true, error: null });
     try {
-      const res = await fetch('/api/rooms', {
+      const res = await fetch('http://13.203.76.7:5000/api/rooms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const useRoomStore = create((set, get) => ({
     const token = get().getToken();
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`/api/rooms/${id}`, {
+      const res = await fetch(`http://13.203.76.7:5000/api/rooms/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export const useRoomStore = create((set, get) => ({
     const token = get().getToken();
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`/api/rooms/${id}`, {
+      const res = await fetch(`http://13.203.76.7:5000/api/rooms/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

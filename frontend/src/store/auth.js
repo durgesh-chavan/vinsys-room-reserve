@@ -10,7 +10,7 @@ export const useAuthStore = create((set) => ({
   // ✅ Login method
   login: async ({ email, password }) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/users/login', { email, password });
+      const res = await axios.post('http://13.203.76.7:5000/api/users/login', { email, password });
       const { user, token } = res.data;
 
       // ✅ Ensure token and user are valid before saving
