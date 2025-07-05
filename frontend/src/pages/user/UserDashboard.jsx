@@ -27,7 +27,7 @@ export default function UserDashboard() {
   const fetchUserBookings = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('/bookings');
+      const res = await axios.get('http://localhost:5000/api/bookings/');
       const now = new Date();
       const userBookings = res.data.data.filter(b => b.userId._id === user._id);
 

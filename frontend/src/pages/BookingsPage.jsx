@@ -36,7 +36,7 @@ export default function BookingsPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/users?role=user');
+      const res = await axios.get('http://localhost:5000/api/users?role=user');
       setUserList(res.data.data || []);
     } catch (error) {
       console.error('Failed to fetch users:', error);

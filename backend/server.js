@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
+import cors from 'cors';
+import corsOptions from './corsConfig.js';
 
 import userRoutes from './routes/user.route.js';
 import roomRoutes from './routes/room.route.js';
@@ -13,6 +15,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/users", userRoutes);

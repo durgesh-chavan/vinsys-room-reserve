@@ -15,7 +15,7 @@ export const useBookingStore = create((set, get) => ({
     }
 
     try {
-      const res = await axios.post('/bookings', newBooking);
+      const res = await axios.post('http://localhost:5000/api/bookings/', newBooking);
 
       if (res.data?.success) {
         await get().getBookings();
@@ -39,7 +39,7 @@ export const useBookingStore = create((set, get) => ({
     if (!user) return;
 
     try {
-      const res = await axios.get('/bookings');
+      const res = await axios.get('http://localhost:5000/api/bookings/');
 
       if (res.data?.success) {
         set({ bookings: res.data.data });

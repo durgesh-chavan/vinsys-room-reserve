@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: '/api', // ✅ Only works if using Vite proxy
+  baseURL: 'http://localhost:5000', // Updated for EC2 full deployment
 });
 
 axiosInstance.interceptors.request.use(
