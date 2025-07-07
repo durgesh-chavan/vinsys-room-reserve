@@ -1,73 +1,99 @@
-🏫 VINSYS Training Room Booking System
-Group 4 Project
-Team Members: 22, 6, 24, 9, 10, 23
+# 🏢 VINSYS Training Room Booking System
 
-📌 Overview
-The VINSYS Training Room Booking System is a full-stack web application designed to simplify the process of booking training rooms and resources. It offers secure user authentication, real-time calendar views, admin approval, OTP verification, and automated email confirmations — all hosted using modern cloud technologies.
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![AWS](https://img.shields.io/badge/AWS-EC2%2BS3%2BSNS-orange)
+![MongoDB](https://img.shields.io/badge/database-MongoDB_Atlas-green)
 
-🚀 Features
-✅ User Authentication – Secure login/signup with JWT-based auth.
+> A cloud-based solution for efficient training room management and resource allocation
 
-📝 Booking Form – Select room, date, and time with validations.
+## 🌟 Features
 
-🗓️ Booking Calendar – Visual calendar view of existing and upcoming bookings.
+### Core Functionality
+- **Secure Authentication** (JWT + OTP verification)
+- **Intuitive Booking Interface** with form validations
+- **Admin Approval Workflow** with dashboard
+- **Real-time Calendar View** of room availability
 
-🔐 OTP Verification – Verifies user identity before finalizing a booking.
+### Technical Highlights
+- **Cloud Native Architecture** (AWS hosted)
+- **Automated Email/SMS Notifications**
+- **Responsive React Frontend**
+- **Scalable Node.js Backend**
 
-🛠️ Admin Dashboard – Admins can view, approve, or reject bookings.
+## 🖥️ Screenshots
 
-📧 Email Notifications – Automatic booking confirmation via email.
+| Login Screen | Booking Calendar | Admin Dashboard |
+|--------------|------------------|-----------------|
+| ![Login](https://via.placeholder.com/300x200?text=Login+Screen) | ![Calendar](https://via.placeholder.com/300x200?text=Booking+Calendar) | ![Admin](https://via.placeholder.com/300x200?text=Admin+Dashboard) |
 
-☁️ Cloud Architecture (AWS + MongoDB)
-This project is fully deployed in the cloud using a combination of AWS services and MongoDB Atlas:
+## 🛠️ Tech Stack
 
-Amazon S3
+**Frontend**:
+- React.js
+- Material-UI
+- FullCalendar.js
 
-Hosts the static React frontend
+**Backend**:
+- Node.js
+- Express.js
+- Mongoose ODM
 
-Stores training-related assets
+**Infrastructure**:
+- AWS EC2 (Backend)
+- AWS S3 (Frontend)
+- MongoDB Atlas (Database)
+- AWS SNS (Notifications)
 
-Amazon EC2
+## 🚀 Deployment Architecture
 
-Hosts the Node.js + Express backend on a t3.medium instance
+```mermaid
+graph TD
+    A[React Frontend] -->|Hosted on| B[AWS S3]
+    C[Node.js Backend] -->|Hosted on| D[AWS EC2]
+    E[MongoDB Atlas] -->|Database| C
+    C -->|Sends| F[AWS SNS]
+    F -->|Notifications| G[Email/SMS]
+````
+⚙️ Installation
+Prerequisites
+Node.js v16+
 
-MongoDB Atlas
+MongoDB Atlas account
 
-Cloud-hosted database for storing users, rooms, and booking data
+AWS account (for deployment)
 
-Amazon SNS (Simple Notification Service)
+Local Development Setup
+# Clone repository
+git clone https://github.com/your-repo/vinsys-booking.git
+cd vinsys-booking
 
-Sends automated email confirmations after bookings are approved
+# Install backend dependencies
+cd backend
+npm install
 
-🎯 Deliverables
-✅ Fully functional booking system accessible online (frontend hosted on S3)
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your credentials
 
-✅ Admin dashboard with full control over booking approvals
+# Start backend server
+npm run dev
 
-✅ Integration with OTP and email notification system
+# In another terminal - frontend setup
+cd ../frontend
+npm install
+npm start
 
-✅ At least 5 demo bookings with complete confirmation workflow
 
-✅ All services deployed using AWS and MongoDB Atlas
-
-✅ Success Criteria
-Users can register, log in, and book available rooms.
-
-OTP is required for final booking submission.
-
-Admins can view and approve/reject bookings via the dashboard.
-
-Email confirmations are triggered using AWS SNS (5 confirmations minimum).
-
-All features integrated and live on the cloud infrastructure.
-
-🛠️ Tech Stack
-Frontend: React.js (hosted on S3)
-
-Backend: Node.js + Express (hosted on EC2)
-
-Database: MongoDB Atlas (cloud-hosted NoSQL)
-
-Notifications: AWS SNS
-
-Authentication: JWT with OTP verification
+vinsys-booking/
+├── backend/           # Node.js server
+│   ├── controllers/  # Route controllers
+│   ├── models/       # MongoDB models
+│   ├── routes/       # API endpoints
+│   └── app.js        # Main server file
+├── frontend/         # React application
+│   ├── public/       # Static assets
+│   ├── src/          # React components
+│   └── ...           # React config files
+├── docs/             # Documentation
+└── README.md         # Project overview
